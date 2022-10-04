@@ -1,20 +1,33 @@
 .main {
     display: flex;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
 }
-.products {
+.products,
+.incomes-list {
     list-style: none;
+}
+.incomes-list li:hover{
+    background-color: #d7d5d5;
 }
 .products img {
     width:100px;
     display: inline-block;
 }
-.product-page span {
+.product-page span,
+.incomes-page span{
     width: 100px;
     display: inline-block;
 }
-.product-page .products ul {
+.product-page .products ul,
+.incomes-page .products ul {
     padding-left: 0;
+}
+
+button.submit-add-new {
+    margin-top: 20px;
+}
+.incomes-page {
+    display:flex;
 }
 
 .modal-custom {
@@ -51,8 +64,4 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
-}
-
-button.submit-add-new {
-    margin-top: 20px;
 }

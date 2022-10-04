@@ -23,29 +23,49 @@
         "end": "2017-06-30 12:09:33"
       },
       "date": "2017-06-29 12:09:33"
+    },
+    {
+      "title": "prod3",
+      "type": "tttt",
+      "photo": "./src/assets/images/laptop.jpeg",
+      "id": 3
+    },
+    {
+      "title": "prod4",
+      "type": "ggg",
+      "photo": "./src/assets/images/laptop.jpeg",
+      "id": 4
     }
   ],
-  "orders": [
+  "incomes": [
     {
       "id": 1,
       "title": "Order 1",
       "date": "2017-06-29 12:09:33",
       "description": "desc 1",
-      "products": [1,2]
+      "products": [
+        1,
+        2
+      ]
     },
     {
       "id": 2,
       "title": "Order 2",
       "date": "2017-06-30 12:09:33",
       "description": "desc 2 ",
-      "products": [1]
+      "products": [
+        1,
+        4
+      ]
     },
     {
       "id": 3,
       "title": "Order 4",
       "date": "2017-07-03 12:10:33",
       "description": "desc 3",
-      "products": [2]
+      "products": [
+        2
+      ]
     }
   ]
 }
