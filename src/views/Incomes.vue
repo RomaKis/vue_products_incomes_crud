@@ -4,7 +4,7 @@
 
 <template>
   <main>
-    <div>Income</div>
+    <div>Incomes</div>
 
   </main>
 </template>
