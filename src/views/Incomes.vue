@@ -25,19 +25,19 @@
 
       </div>
       <div class="income-products" v-show="incomeChosen !== false">
+        <div class="close-products-in-income">
+            <button class="btn-close-products-in-income" @click="closeProductsInIncome()"> X </button>
+          </div>
         <div class="products-top-line">
+          <div class="income-description-products">{{ incomeChosen.description }}</div>
           <div class="div-for-btn-add-product">
             <button class="btn-add-product-to-income" @click="showModalAddProductToIncome = true"> +
               <span>Add product</span>
             </button>
           </div>
-          <div class="close-products-in-income">
-            <button class="close-products-in-income" @click="closeProductsInIncome()"> x
-              <span>Close</span>
-            </button>
-          </div>
+         
         </div>
-        <div class="income-description-products">{{ incomeChosen.description }}</div>
+       
         <ul class="products">
           <li v-for="product in productsForIncome" :key="product.title" class="product">
             <img :src="product.photo" class="img-product">
@@ -126,7 +126,7 @@ export default {
 
     showProductsInIncome: function (incomeId) {
       let income = this.incomes.find(x => x.id === incomeId),
-          productIds = income.products,
+      productIds = JSON.parse(JSON.stringify(income.products)),
           self = this;
 
       this.incomeChosen = income;
