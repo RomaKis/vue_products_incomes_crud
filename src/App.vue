@@ -5,25 +5,25 @@ import {RouterLink, RouterView} from 'vue-router'
 
 <template>
   <header>
-    <div class="d-flex justify-content-between">
-      <div>Inventory</div>
+    <div class="header">
+      <div class="header-logo">INVENTORY</div>
       <div class="current-date">
-        <div>{{ currentDay }}</div>
+        <div>Today</div>
         <div>{{ currentDate }}</div>
       </div>
     </div>
   </header>
   <div class="main">
-    <nav class="navbar navbar-expand-sm bg-light navbar-dark">
+    <div class="navb">
       <ul class="navbar-nav">
-        <li class="nav-item m-1">
-          <RouterLink class="btn btn-light btn-outline-primary" to="/">Incomes</RouterLink>
+        <li class="nav-item ">
+          <RouterLink class="btn-incomes" to="/">Incomes</RouterLink>
         </li>
-        <li class="nav-item m-1">
-          <RouterLink class="btn btn-light btn-outline-primary" to="/products">Products</RouterLink>
+        <li class="nav-item">
+          <RouterLink class="btn-product" to="/products">Products</RouterLink>
         </li>
       </ul>
-    </nav>
+    </div>
     <div class="description">
 
     </div>
@@ -34,8 +34,7 @@ import {RouterLink, RouterView} from 'vue-router'
 export default {
   data() {
     return {
-      currentDate: '',
-      currentDay: ''
+      currentDate: ''
     }
   },
   methods: {
@@ -46,13 +45,10 @@ export default {
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            minute: '2-digit'
           };
 
       this.currentDate = currentDate.toLocaleString('en-us', dateOptions).replace('at', '');
-      this.currentDay = currentDate.toLocaleString('en-en', {weekday: 'long'});
-
     }
   },
   mounted() {

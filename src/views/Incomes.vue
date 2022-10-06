@@ -1,46 +1,51 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <main>
-    <h2>Incomes({{ incomesQty }}):</h2>
+    <div class="incomes-count">
+      <button class="add-new btn-add-new-income" @click="showModalToAddIncome = true">+</button>
+      <h2>Incomes / {{ incomesQty }}</h2>
+    </div>
     <div class="incomes-page">
       <div class="incomes">
         <ul class="incomes-list">
-          <li @click="showProductsForIncome(income.id)"
-              v-for="income in incomes"
-              :key="income.title"
-              class="income"
-          >
+          <li @click="showProductsInIncome(income.id)" v-for="income in incomes" :key="income.title"
+              v-bind:class="{ active: income.id === incomeChosen.id }">
             <span>{{ income.title }}</span>
+            <span>
             <span v-if="income.products">
-            <span v-if="income.products.length === 1">{{ income.products.length }} product</span>
-            <span v-if="income.products.length > 1">{{ income.products.length }} products</span>
+              <span v-if="income.products.length === 1">{{ income.products.length }} product</span>
+              <span v-if="income.products.length > 1">{{ income.products.length }} products</span>
+            </span>
           </span>
-            <span>{{ income.date }}</span>
+            <span class="new-income-date">{{ income.date }}</span>
             <span>{{ income.description }}</span>
-            <button class="btn btn-danger" @click="deleteIncome(income.id)">Delete Income</button>
+            <button class="btn btn-delete-income" @click="deleteIncome(income.id)"><img src="../assets/images/trash.svg"
+                                                                                        alt=""></button>
           </li>
         </ul>
 
-        <button class="add-new btn btn-primary" @click="showModalToAddIncome = true">Add new Income</button>
       </div>
-      <div class="income-products">
-        <button class="btn btn-success" v-show="incomeChosenId !== false" @click="showModalAddProductToIncome =
-       true">Add Product To Income
-        </button>
+      <div class="income-products" v-show="incomeChosen !== false">
+        <div class="products-top-line">
+          <div class="div-for-btn-add-product">
+            <button class="btn-add-product-to-income" @click="showModalAddProductToIncome = true"> +
+              <span>Add product</span>
+            </button>
+          </div>
+          <div class="close-products-in-income">
+            <button class="close-products-in-income" @click="closeProductsInIncome()"> x
+              <span>Close</span>
+            </button>
+          </div>
+        </div>
+        <div class="income-description-products">{{ incomeChosen.description }}</div>
         <ul class="products">
-          <li
-              v-for="product in productsForIncome"
-              :key="product.title"
-              class="product"
-          >
-            <img :src="product.photo">
+          <li v-for="product in productsForIncome" :key="product.title" class="product">
+            <img :src="product.photo" class="img-product">
             <span>{{ product.title }}</span>
             <span>{{ product.type }}</span>
-            <button class="btn btn-danger" @click="deleteProductFromIncome(product.id)">Delete Product From Income
-            </button>
+            <button class="btn-delete-product-from-income" @click="deleteProductFromIncome(product.id)"><img
+                src="../assets/images/trash.svg"
+                alt=""></button>
           </li>
         </ul>
       </div>
@@ -48,7 +53,7 @@
 
     <div id="modal-add-product-to-income" class="modal-custom" v-show="showModalAddProductToIncome === true">
       <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
+        <span class="close" @click="showModalAddProductToIncome = false">&times;</span>
         <select v-model="selectedAddProductToIncome">
           <option value="">Please Select</option>
           <option v-for="option in products" :value="option.id">{{ option.title }}</option>
@@ -60,10 +65,10 @@
     <div id="modal-add-new-income" class="modal-custom" v-show="showModalToAddIncome === true">
       <div class="modal-content">
         <span class="close" @click="showModalToAddIncome = false">&times;</span>
-        <p v-if="errors.length">
-          <b>Please correct the following error(s):</b>
+        <p class="error-list" v-if="errors.length">
+          <b class="error-header">Please correct the following error(s):</b>
         <ul>
-          <li v-for="error in errors">{{ error }}</li>
+          <li class="error-option" v-for="error in errors">{{ error }}</li>
         </ul>
         </p>
 
@@ -104,7 +109,7 @@ export default {
       incomesQty: 0,
       productsForIncome: [],
       products: [],
-      incomeChosenId: false,
+      incomeChosen: false,
       selectedAddProductToIncome: ''
     }
   },
@@ -119,12 +124,12 @@ export default {
       }
     },
 
-    showProductsForIncome: function (incomeId) {
+    showProductsInIncome: function (incomeId) {
       let income = this.incomes.find(x => x.id === incomeId),
           productIds = income.products,
           self = this;
 
-      this.incomeChosenId = incomeId;
+      this.incomeChosen = income;
       self.productsForIncome = [];
       axios.get(baseUrlProducts).then(resp => {
         self.products = resp.data;
@@ -168,7 +173,7 @@ export default {
       }
     },
     deleteProductFromIncome: async function (productId) {
-      let income = this.incomes.find(x => x.id === this.incomeChosenId),
+      let income = this.incomes.find(x => x.id === this.incomeChosen.id),
           productsInIncome = JSON.parse(JSON.stringify(income.products));
 
       const index = productsInIncome.indexOf(productId);
@@ -176,41 +181,44 @@ export default {
         productsInIncome.splice(index, 1);
         income.products = productsInIncome;
         try {
-          await axios.put(baseUrlIncomes + '/' + this.incomeChosenId, income).then(resp => {
+          await axios.put(baseUrlIncomes + '/' + this.incomeChosen.id, income).then(resp => {
           });
         } catch (error) {
         }
       }
-      this.showProductsForIncome(income.id);
+      this.showProductsInIncome(income.id);
     },
     addProductToIncome: async function (productId) {
-      let income = this.incomes.find(x => x.id === this.incomeChosenId),
-          productsInIncome = [],
+      let productsInIncome = [],
           productToAdd = this.selectedAddProductToIncome;
 
-      if (income.products) {
-        productsInIncome = JSON.parse(JSON.stringify(income.products))
+      if (this.incomeChosen.products) {
+        productsInIncome = JSON.parse(JSON.stringify(this.incomeChosen.products))
       }
 
       if (productToAdd && !productsInIncome.includes(productToAdd)) {
         productsInIncome.push(productToAdd);
-        income.products = productsInIncome;
+        this.incomeChosen.products = productsInIncome;
 
         try {
-          await axios.put(baseUrlIncomes + '/' + this.incomeChosenId, income).then(resp => {
+          await axios.put(baseUrlIncomes + '/' + this.this.incomeChosen.id, this.incomeChosen).then(resp => {
           });
         } catch (error) {
         }
       }
       this.showModalAddProductToIncome = false;
-      this.showProductsForIncome(income.id);
+      this.showProductsInIncome(this.incomeChosen.id);
+    },
+    closeProductsInIncome: function () {
+      this.incomeChosen = false
+      this.productsForIncome = [];
     },
     deleteIncome: async function (id) {
       try {
         self = this;
         await axios.delete(baseUrlIncomes + '/' + id).then(resp => {
           this.getIncomes();
-          self.incomeChosenId = false;
+          self.incomeChosen = false;
           self.productsForIncome = [];
         });
       } catch (error) {
